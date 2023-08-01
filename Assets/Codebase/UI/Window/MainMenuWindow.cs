@@ -10,6 +10,8 @@ namespace Assets.Codebase.UI.Window
 {
     public class MainMenuWindow : MonoBehaviour
     {
+        private const string NameKey = "name";
+
         [SerializeField] private int _lobbySceneId;
         [SerializeField] private TMP_Text _titleText;
         [SerializeField] private TMP_Text _loadingText;
@@ -18,10 +20,23 @@ namespace Assets.Codebase.UI.Window
         [SerializeField] private Button _singleplayerButton;
 
         private INetworkService _netService;
+        string _playerName;
 
         private void Awake()
         {
             _netService = ServiceLocator.Container.Single<INetworkService>();
+        }
+
+        private void Start()
+        {
+            if (PlayerPrefs.HasKey(NameKey))
+            {
+                _nameField.text = PlayerPrefs.GetString(NameKey);
+            }
+            else
+            {
+                _nameField.text = string.Empty;
+            }
         }
 
         private void OnEnable()
@@ -38,6 +53,15 @@ namespace Assets.Codebase.UI.Window
 
         private void MultiplayerButtonClicked()
         {
+            if (_nameField.text.Length == 0)
+            {
+                return;
+            }
+            else
+            {
+                SetLocalPlayerName();
+            }
+
             NetworkCallbacks.Instance.OnRoomJoined += GoToLobby;
             NetworkCallbacks.Instance.OnRoomCreationFailed += MultiplayerFailed;
 
@@ -47,6 +71,13 @@ namespace Assets.Codebase.UI.Window
             _singleplayerButton.gameObject.SetActive(false);
             _nameField.gameObject.SetActive(false);
             _loadingText.gameObject.SetActive(true);
+        }
+
+        private void SetLocalPlayerName()
+        {
+            PhotonNetwork.LocalPlayer.NickName = _nameField.text;
+            PlayerPrefs.SetString(NameKey, _nameField.text);
+            PlayerPrefs.Save();
         }
 
         private void GoToLobby()
