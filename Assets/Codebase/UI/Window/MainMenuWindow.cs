@@ -1,4 +1,6 @@
-﻿using Assets.Codebase.Network;
+﻿using Assets.Codebase.Infrastructure.Services.Network;
+using Assets.Codebase.Network;
+using Assets.CodeBase.Infrastructure.Services;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
@@ -15,6 +17,13 @@ namespace Assets.Codebase.UI.Window
         [SerializeField] private Button _multiplayerButton;
         [SerializeField] private Button _singleplayerButton;
 
+        private INetworkService _netService;
+
+        private void Awake()
+        {
+            _netService = ServiceLocator.Container.Single<INetworkService>();
+        }
+
         private void OnEnable()
         {
             _multiplayerButton.onClick.AddListener(MultiplayerButtonClicked);
@@ -29,6 +38,8 @@ namespace Assets.Codebase.UI.Window
         {
             NetworkCallbacks.Instance.OnRoomJoined += GoToLobby;
             NetworkCallbacks.Instance.OnRoomCreationFailed += MultiplayerFailed;
+
+            _netService.JoinRandomRoom();
 
             _multiplayerButton.gameObject.SetActive(false);
             _singleplayerButton.gameObject.SetActive(false);
