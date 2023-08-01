@@ -13,6 +13,7 @@ namespace Assets.Codebase.Network
         public event Action OnConnectedToServer;
         public event Action OnRoomJoined;
         public event Action OnRoomCreationFailed;
+        public event Action OnRoomLeft;
 
         private void Awake()
         {
@@ -53,6 +54,12 @@ namespace Assets.Codebase.Network
         {
             Debug.Log("Failed creating room");
             OnRoomCreationFailed?.Invoke();
+        }
+
+        public override void OnLeftRoom()
+        {
+            Debug.Log("Left room");
+            OnRoomLeft?.Invoke();
         }
     }
 }

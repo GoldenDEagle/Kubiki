@@ -45,8 +45,6 @@ namespace Assets.Codebase.UI.Window
             _singleplayerButton.gameObject.SetActive(false);
             _nameField.gameObject.SetActive(false);
             _loadingText.gameObject.SetActive(true);
-
-
         }
 
         private void GoToLobby()
