@@ -26,11 +26,13 @@ namespace Assets.Codebase.UI.Window
 
         private void OnEnable()
         {
+            NetworkCallbacks.Instance.OnConnectedToServer += AfterConnectedToServer;
             _multiplayerButton.onClick.AddListener(MultiplayerButtonClicked);
         }
 
         private void OnDisable()
         {
+            NetworkCallbacks.Instance.OnConnectedToServer -= AfterConnectedToServer;
             _multiplayerButton.onClick.RemoveAllListeners();
         }
 
@@ -62,6 +64,11 @@ namespace Assets.Codebase.UI.Window
             _singleplayerButton.gameObject.SetActive(true);
             _nameField.gameObject.SetActive(true);
             _loadingText.gameObject.SetActive(false);
+        }
+
+        private void AfterConnectedToServer()
+        {
+            _multiplayerButton.gameObject.SetActive(true);
         }
 
         private void OnDestroy()

@@ -1,6 +1,7 @@
 ﻿using Assets.Codebase.Infrastructure.Services.Network;
 using Assets.CodeBase.Infrastructure.Services;
 using Photon.Pun;
+using Photon.Realtime;
 using System;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ namespace Assets.Codebase.Network
         public event Action OnRoomJoined;
         public event Action OnRoomCreationFailed;
         public event Action OnRoomLeft;
+        public event Action OnNewPlayerEnteredRoom;
+        public event Action OnAnyPlayerLeftRoom;
 
         private void Awake()
         {
@@ -60,6 +63,18 @@ namespace Assets.Codebase.Network
         {
             Debug.Log("Left room");
             OnRoomLeft?.Invoke();
+        }
+
+        public override void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            Debug.Log("New player entered room");
+            OnNewPlayerEnteredRoom?.Invoke();
+        }
+
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            Debug.Log("Player left room");
+            OnAnyPlayerLeftRoom?.Invoke();
         }
     }
 }
