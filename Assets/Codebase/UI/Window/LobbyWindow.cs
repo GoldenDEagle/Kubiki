@@ -8,8 +8,11 @@ namespace Assets.Codebase.UI.Window
 {
     public class LobbyWindow : MonoBehaviour
     {
+        private const string PlayersKey = "Игроки: ";
+
         [SerializeField] private int _multiplayerSceneId;
         [SerializeField] private TMP_Text _playerCounter;
+        [SerializeField] private TMP_Text _playerNames;
         [SerializeField] private Button _startGameButton;
         [SerializeField] private Button _cancelButton;
 
@@ -53,7 +56,13 @@ namespace Assets.Codebase.UI.Window
                 _readyToStart = false;
             }
 
-            _playerCounter.text = "Игроки: " + _playerCount.ToString();
+            _playerCounter.text = PlayersKey + _playerCount.ToString();
+            _playerNames.text = string.Empty;
+            var allPlayers = PhotonNetwork.CurrentRoom.Players.Values;
+            foreach (var player in allPlayers)
+            {
+                _playerNames.text += player.NickName + " ";
+            }
         }
 
         private void StartClicked()
