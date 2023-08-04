@@ -17,7 +17,7 @@ namespace Assets.Codebase.UI.Window
         [SerializeField] private Button _cancelButton;
 
         private int _playerCount;
-        private int _minPlayersToStart = 2;
+        private int _minPlayersToStart = 1;
 
         private bool _readyToStart;
         private bool _startingGame;

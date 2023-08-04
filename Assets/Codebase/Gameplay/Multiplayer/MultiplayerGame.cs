@@ -12,7 +12,7 @@ namespace Assets.Codebase.Gameplay.Multiplayer
         [SerializeField] private Button _button;
 
         private PunTurnManager _turnManager;
-        private int _activePlayerId = 0;
+        private int _activePlayerId = 1;
 
         private void Awake()
         {
@@ -45,7 +45,8 @@ namespace Assets.Codebase.Gameplay.Multiplayer
 
         private void EndPlayerTurn()
         {
-            PhotonNetwork.LocalPlayer.SetFinishedTurn(_turnManager.Turn);
+            Debug.Log("Finished turn " + _turnManager.Turn);
+            _turnManager.SendMove(null, true);
         }
 
 
