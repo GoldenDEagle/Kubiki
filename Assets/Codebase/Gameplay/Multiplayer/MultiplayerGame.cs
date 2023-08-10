@@ -1,3 +1,4 @@
+using Assets.Codebase.Gameplay.General.CanvasVersion;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
@@ -9,7 +10,8 @@ namespace Assets.Codebase.Gameplay.Multiplayer
     [RequireComponent(typeof(PunTurnManager))]
     public class MultiplayerGame : MonoBehaviour, IPunTurnManagerCallbacks
     {
-        [SerializeField] private Button _button;
+        [SerializeField] private Button _throwButton;
+        [SerializeField] private SetOfDices _dices;
 
         private PunTurnManager _turnManager;
         private int _activePlayerId = 1;
@@ -27,12 +29,16 @@ namespace Assets.Codebase.Gameplay.Multiplayer
 
         private void OnEnable()
         {
-            _button.onClick.AddListener(EndPlayerTurn);
+            _throwButton.onClick.AddListener(MakeAThrow);
+            _dices.OnRollStarted += DisableButton;
+            _dices.OnRollEnded += EnableButton;
         }
 
         private void OnDisable()
         {
-            _button.onClick.RemoveAllListeners();
+            _throwButton.onClick.RemoveAllListeners();
+            _dices.OnRollStarted -= DisableButton;
+            _dices.OnRollEnded -= EnableButton;
         }
 
         private void BeginNewTurnIfMaster()
@@ -43,12 +49,33 @@ namespace Assets.Codebase.Gameplay.Multiplayer
             }
         }
 
+        private void MakeAThrow()
+        {
+            if (_dices.CurrentThrowNumber > 2)
+            {
+                _dices.ResetThrowNumber();
+                EndPlayerTurn();
+                return;
+            }
+
+            _dices.MakeATrow();
+        }
+
         private void EndPlayerTurn()
         {
             Debug.Log("Finished turn " + _turnManager.Turn);
             _turnManager.SendMove(null, true);
         }
 
+        private void EnableButton()
+        {
+            _throwButton.interactable = true;
+        }
+
+        private void DisableButton()
+        {
+            _throwButton.interactable = false;
+        }
 
 
         // Photon Callbacks
@@ -63,11 +90,11 @@ namespace Assets.Codebase.Gameplay.Multiplayer
 
             if (PhotonNetwork.LocalPlayer.ActorNumber == _activePlayerId)
             {
-                _button.gameObject.SetActive(true);
+                _throwButton.gameObject.SetActive(true);
             }
             else
             {
-                _button.gameObject.SetActive(false);
+                _throwButton.gameObject.SetActive(false);
             }
         }
 
@@ -80,11 +107,11 @@ namespace Assets.Codebase.Gameplay.Multiplayer
         {
             if (PhotonNetwork.LocalPlayer.ActorNumber == _activePlayerId)
             {
-                _button.gameObject.SetActive(true);
+                _throwButton.gameObject.SetActive(true);
             }
             else
             {
-                _button.gameObject.SetActive(false);
+                _throwButton.gameObject.SetActive(false);
             }
         }
 

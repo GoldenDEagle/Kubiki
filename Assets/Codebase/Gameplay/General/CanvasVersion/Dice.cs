@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace Assets.Codebase.Gameplay.General.CanvasVersion
 {
@@ -17,6 +19,13 @@ namespace Assets.Codebase.Gameplay.General.CanvasVersion
         private Coroutine _spinRoutine;
         private int _numberOfImages;
         private WaitForSeconds _animationStep;
+        private bool _isRolling = false;
+        private int _currentValue;
+
+        public event Action OnDiceRollEnded;
+
+        public bool IsRolling => _isRolling;
+        public int CurrentValue => _currentValue;
 
         private void Start()
         {
@@ -24,9 +33,15 @@ namespace Assets.Codebase.Gameplay.General.CanvasVersion
             _animationStep = new WaitForSeconds(_animationTimeStep);
         }
 
+        public bool IsSelected() => _diceToggle.isOn;
+
         [ContextMenu("Roll")]
         public void Roll()
         {
+            _isRolling = true;
+            _diceToggle.isOn = false;
+            _diceToggle.interactable = false;
+
             if (_spinRoutine != null)
             {
                 StopCoroutine(_spinRoutine);
@@ -39,7 +54,7 @@ namespace Assets.Codebase.Gameplay.General.CanvasVersion
         private IEnumerator Spinning()
         {
             int previouIndex = 0;
-            while (true)
+            while (_isRolling)
             {
                 int randomIndex;
                 do
@@ -51,6 +66,18 @@ namespace Assets.Codebase.Gameplay.General.CanvasVersion
 
                 previouIndex = randomIndex;
                 yield return _animationStep;
+            }
+        }
+
+        public void StopTheRoll(int rollNumber)
+        {
+            _isRolling = false;
+            _currentValue = Random.Range(1, 7);
+            _diceImage.sprite = _diceSprites[_currentValue - 1];
+
+            if (rollNumber < 2)
+            {
+                _diceToggle.interactable = true;
             }
         }
     }
