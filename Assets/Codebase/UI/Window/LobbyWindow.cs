@@ -1,5 +1,10 @@
-﻿using Assets.Codebase.Network;
+﻿using Assets.Codebase.Data;
+using Assets.Codebase.Network;
+using Assets.Codebase.Utils;
+using ExitGames.Client.Photon;
 using Photon.Pun;
+using Photon.Realtime;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -95,6 +100,20 @@ namespace Assets.Codebase.UI.Window
             }
 
             PhotonNetwork.CurrentRoom.IsOpen = false;
+
+
+            Dictionary<int, PlayerResults> resultDictionary = new Dictionary<int, PlayerResults>();
+            foreach (Player player in PhotonNetwork.CurrentRoom.Players.Values)
+            {
+                resultDictionary.Add(player.ActorNumber, new PlayerResults());
+            }
+            Hashtable startingRoomProperties = new Hashtable()
+            {
+                { PropertyKeys.CurrentPlayer, PhotonNetwork.MasterClient },
+                { PropertyKeys.Results, resultDictionary}
+            };
+
+            PhotonNetwork.CurrentRoom.SetCustomProperties(startingRoomProperties);
             PhotonNetwork.LoadLevel(_multiplayerSceneId);
         }
     }

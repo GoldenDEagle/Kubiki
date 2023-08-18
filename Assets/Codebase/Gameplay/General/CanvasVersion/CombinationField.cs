@@ -13,8 +13,6 @@ namespace Assets.Codebase.Gameplay.General.CanvasVersion
         [SerializeField] private Image _cross;
         [SerializeField] private SetOfDices _setOfDices;
 
-        private bool _isFilled;
-
         private void OnEnable()
         {
             
@@ -27,10 +25,7 @@ namespace Assets.Codebase.Gameplay.General.CanvasVersion
 
         private void HideField()
         {
-            if (!_isFilled)
-            {
 
-            }
         }
     }
 }

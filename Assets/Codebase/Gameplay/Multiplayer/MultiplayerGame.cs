@@ -24,6 +24,7 @@ namespace Assets.Codebase.Gameplay.Multiplayer
 
         private void Start()
         {
+            //PhotonNetwork.CurrentRoom.SetCustomProperties({ "CurrentPlayer", PhotonNetwork.CurrentRoom.Players[0] });
             BeginNewTurnIfMaster();
         }
 
@@ -82,6 +83,7 @@ namespace Assets.Codebase.Gameplay.Multiplayer
         public void OnPlayerFinished(Player player, int turn, object move)
         {
             _activePlayerId++;
+            //PhotonNetwork.CurrentRoom.SetCustomProperties();
 
             if (_activePlayerId > PhotonNetwork.CurrentRoom.PlayerCount)
             {
